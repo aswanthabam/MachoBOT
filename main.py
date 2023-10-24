@@ -1,67 +1,63 @@
-# OpenCV program to detect face in real time
-# import libraries of python OpenCV
-# where its functionality resides
-# import cv2
-import gtts
-from playsound import playsound
-# load the required trained XML classifiers
-# https://github.com/Itseez/opencv/blob/master/
-# data/haarcascades/haarcascade_frontalface_default.xml
-# Trained XML classifiers describes some features of some
-# object we want to detect a cascade function is trained
-# from a lot of positive(faces) and negative(non-faces)
-# images.
+import cv2
+import voice
+from datetime import datetime
+print("Starting Video Capture.. ")
+cap = cv2.VideoCapture(0)
 
-# # capture frames from a camera
-# cap = cv2.VideoCapture(0)
+face_cascade = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml')
 
-# face_cascade = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier('res/haarcascade_eye.xml')
 
-# # https://github.com/Itseez/opencv/blob/master
-# # /data/haarcascades/haarcascade_eye.xml
-# # Trained XML file for detecting eyes
-# eye_cascade = cv2.CascadeClassifier('res/haarcascade_eye.xml')
+# loop runs if capturing has been initialized.
+FACE_FOUND_ON = FACE_GONE_ON = datetime.now()
+FACE_NOT_FOUND_TIME = FACE_FOUND_TIME = 0
+while 1:
+	ret, img = cap.read()
+	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+	if len(faces) > 0:
+    	# Face is found say message
+		FACE_FOUND_ON = datetime.now()
+		diff = FACE_FOUND_ON - FACE_GONE_ON
+		FACE_FOUND_TIME = diff.total_seconds()
+		print("Found a face for : ",FACE_FOUND_TIME,'s')
+		if FACE_NOT_FOUND_TIME > 5 and FACE_FOUND_TIME < 1:
+			# Say message
+			voice.say_message("Hi, Welcome to vijnana tech fest")
+		else:
+			# Do nothing the person is infront of camera for a while
+			pass
+	else:
+		FACE_GONE_ON = datetime.now()
+		diff = FACE_GONE_ON - FACE_FOUND_ON
+		FACE_NOT_FOUND_TIME = diff.total_seconds()
 
-# # loop runs if capturing has been initialized.
-# while 1:
+		print("No face found for :",FACE_NOT_FOUND_TIME,'s')
+	for (x,y,w,h) in faces:
+		# To draw a rectangle in a face
+		cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
+		roi_gray = gray[y:y+h, x:x+w]
+		roi_color = img[y:y+h, x:x+w]
+		# Detects eyes of different sizes in the input image
+		eyes = eye_cascade.detectMultiScale(roi_gray)
 
-# 	# reads frames from a camera
-# 	ret, img = cap.read()
+		# To draw a rectangle in eyes
+		for (ex,ey,ew,eh) in eyes:
+			cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,127,255),2)
 
-# 	# convert to gray scale of each frames
-# 	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+	# Display an image in a window
+	cv2.imshow('img',img)
 
-# 	# Detects faces of different sizes in the input image
-# 	faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+	# Wait for Esc key to stop
+	k = cv2.waitKey(30) & 0xff
+	if k == 27:
+		break
 
-# 	for (x,y,w,h) in faces:
-# 		# To draw a rectangle in a face
-# 		cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
-# 		roi_gray = gray[y:y+h, x:x+w]
-# 		roi_color = img[y:y+h, x:x+w]
-# 		t1 = gtts.gTTS("Welcome, my name is Macho bot")
-# 		t1.save("temp/pl.mp3")
-# 		playsound("temp/pl.mp3")
-# 		break
-# 		# Detects eyes of different sizes in the input image
-# 		# eyes = eye_cascade.detectMultiScale(roi_gray)
+# Close the window
+cap.release()
 
-# 		#To draw a rectangle in eyes
-# 		# for (ex,ey,ew,eh) in eyes:
-# 		# 	cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,127,255),2)
+# De-allocate any associated memory usage
+cv2.destroyAllWindows()
 
-# 	# Display an image in a window
-# 	cv2.imshow('img',img)
-
-# 	# Wait for Esc key to stop
-# 	k = cv2.waitKey(30) & 0xff
-# 	if k == 27:
-# 		break
-
-# # Close the window
-# cap.release()
-
-# # De-allocate any associated memory usage
-# cv2.destroyAllWindows()
-gtts.gTTS("Hello World").save("temp/temp.mp3")
-playsound("temp/temp.mp3")
+# gtts.gTTS("Hi, How are you?").save("temp/temp.mp3")
+# playsound("temp/temp.mp3")
