@@ -1,8 +1,22 @@
 import gtts
 from playsound import playsound
+import threading
 
-def say_message(msg):
-  print("Saying msg : "+msg)
-  t1 = gtts.gTTS(msg)
-  t1.save("temp/pl.mp3")
-  playsound("temp/pl.mp3")
+class Voice:
+  msg = ""
+  is_saying = False
+  def __init__(self):
+    pass
+  def run_voice(self):
+    self.is_saying = True
+    print("Saying msg : "+self.msg)
+    t1 = gtts.gTTS(self.msg)
+    t1.save("temp/pl.mp3")
+    playsound("temp/pl.mp3")
+    self.is_saying = False
+  def say_message(self,msg):
+    if self.is_saying:return False
+    self.voice_thread = threading.Thread(target=self.run_voice)
+    self.voice_thread.daemon = True
+    self.msg = msg
+    self.voice_thread.start()

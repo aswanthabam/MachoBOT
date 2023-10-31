@@ -1,5 +1,5 @@
 import cv2
-import voice
+from voice import Voice
 from datetime import datetime
 from common import SharedCam
 import threading
@@ -7,6 +7,7 @@ import threading
 class Face(SharedCam):
 	cam = None
 	exit_flag = None
+	voice = None
 	marked_face_image = None
 	FACE_FOUND_ON = FACE_GONE_ON = datetime.now()
 	FACE_NOT_FOUND_TIME = FACE_FOUND_TIME = 0
@@ -19,7 +20,8 @@ class Face(SharedCam):
 		self.face_thread.daemon = True
 		self.cam = cam
 		self.exit_flag = exit_flag
-	
+		self.voice = Voice()
+
 	def start_face_recognition(self):
 		self.face_thread.start()
 	
@@ -31,22 +33,22 @@ class Face(SharedCam):
 			faces = self.face_cascade.detectMultiScale(gray, 1.3, 5)
 			if len(faces) > 0:
 					# Face is found say message
-				FACE_FOUND_ON = datetime.now()
-				diff = FACE_FOUND_ON - FACE_GONE_ON
-				FACE_FOUND_TIME = diff.total_seconds()
-				print("Found a face for : ",FACE_FOUND_TIME,'s')
-				if FACE_NOT_FOUND_TIME > 5 and FACE_FOUND_TIME < 1:
+				self.FACE_FOUND_ON = datetime.now()
+				diff = self.FACE_FOUND_ON - self.FACE_GONE_ON
+				self.FACE_FOUND_TIME = diff.total_seconds()
+				print("Found a face for : ",self.FACE_FOUND_TIME,'s')
+				if self.FACE_NOT_FOUND_TIME > 5 and self.FACE_FOUND_TIME < 1:
 					# Say message
-					voice.say_message("Hi, Welcome I'm Macho BOT")
+					self.voice.say_message("Hi, Welcome I'm Macho BOT")
 				else:
 					# Do nothing the person is infront of camera for a while
 					pass
 			else:
-				FACE_GONE_ON = datetime.now()
-				diff = FACE_GONE_ON - FACE_FOUND_ON
-				FACE_NOT_FOUND_TIME = diff.total_seconds()
+				self.FACE_GONE_ON = datetime.now()
+				diff = self.FACE_GONE_ON - self.FACE_FOUND_ON
+				self.FACE_NOT_FOUND_TIME = diff.total_seconds()
 
-				# print("No face found for :",FACE_NOT_FOUND_TIME,'s')
+				print("No face found for :",self.FACE_NOT_FOUND_TIME,'s')
 			for (x,y,w,h) in faces:
 				# To draw a rectangle in a face
 				cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
