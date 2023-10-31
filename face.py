@@ -1,6 +1,13 @@
 import cv2
 import voice
 from datetime import datetime
+from .common import SharedCam
+
+class Face:
+	def __init__(self):
+		self.face_cascade = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml') # face 
+		self.eye_cascade = cv2.CascadeClassifier('res/haarcascade_eye.xml') # eye
+	def start
 print("Starting Video Capture.. ")
 cap = cv2.VideoCapture(0)
 

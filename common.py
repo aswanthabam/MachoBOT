@@ -1,6 +1,6 @@
 import threading
 import cv2
-import datetime
+from datetime import datetime
 
 class SharedCam:
   frame = None
@@ -30,11 +30,11 @@ class SharedCam:
         if ret:
             self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             self.last_captured = datetime.now()
-        cv2.imshow('img',self.frame)
-        # Wait for Esc key to stop
-        k = cv2.waitKey(30) & 0xff
-        if k == 27:
-          break
+        # cv2.imshow('img',self.frame)
+        # # Wait for Esc key to stop
+        # k = cv2.waitKey(30) & 0xff
+        # if k == 27:
+        #   break
     print("Captuaring ENDED !")
   
   def join(self):
