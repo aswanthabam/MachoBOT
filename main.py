@@ -23,7 +23,7 @@ while 1:
 		print("Found a face for : ",FACE_FOUND_TIME,'s')
 		if FACE_NOT_FOUND_TIME > 5 and FACE_FOUND_TIME < 1:
 			# Say message
-			voice.say_message("Hi, Welcome to vijnana tech fest")
+			voice.say_message("Hi, Welcome I'm Macho BOT")
 		else:
 			# Do nothing the person is infront of camera for a while
 			pass
