@@ -1,8 +1,8 @@
 from tkinter import *
 from PIL import Image, ImageTk
-import cv2
 from common import SharedCam
 import threading
+from common import ImageUtils
 
 class CameraFeed:
   """A Window that displays the image from camera"""
@@ -10,20 +10,28 @@ class CameraFeed:
   width = 0
   height = 0
   label = None
+  image_size = 0
 
   def __init__(self,window,width,height):
     self.window = window
     self.width = width 
     self.height = height 
     
+    self.image_size = int(width / 10)
+
+    self.posx = width - self.image_size
+    self.posy = 0
+    
     self.label = Label(window)
     self.label.pack()
-    self.label.place(x=300,y=100)
+    self.label.place(x=self.posx,y=self.posy)
   
   def update_frame(self,frame):
     """Update the frame to the next image"""
     if frame is None:return
-    photo = ImageTk.PhotoImage(image=Image.fromarray(frame))
+    frame = ImageUtils.create_rounded_image(frame)
+    frame = ImageUtils.resize_image(frame, (self.image_size,self.image_size))
+    photo = ImageTk.PhotoImage(image=frame)
     self.label.config(image=photo)
     self.label.photo = photo
     # self.label.after(10, update_camera_feed)
@@ -75,6 +83,8 @@ class Interface:
     self.window.geometry(f"{self.screen_width}x{self.screen_height}")
 
     self.window.title("MachoBOT")
+    self.window.configure(bg='white')
+
     self.camera_feed = CameraFeed(self.window,self.screen_width,self.screen_height)  
 
     B = Button(self.window, text ="Click")

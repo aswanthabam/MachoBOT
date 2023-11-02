@@ -36,7 +36,7 @@ class Face(SharedCam):
 				self.FACE_FOUND_ON = datetime.now()
 				diff = self.FACE_FOUND_ON - self.FACE_GONE_ON
 				self.FACE_FOUND_TIME = diff.total_seconds()
-				print("Found a face for : ",self.FACE_FOUND_TIME,'s')
+				print("Found a face for : ",self.FACE_FOUND_TIME,'s',end='\r')
 				if self.FACE_NOT_FOUND_TIME > 5 and self.FACE_FOUND_TIME < 1:
 					# Say message
 					self.voice.say_message("Hi, Welcome I'm Macho BOT")
@@ -48,7 +48,7 @@ class Face(SharedCam):
 				diff = self.FACE_GONE_ON - self.FACE_FOUND_ON
 				self.FACE_NOT_FOUND_TIME = diff.total_seconds()
 
-				print("No face found for :",self.FACE_NOT_FOUND_TIME,'s')
+				print("No face found for :",self.FACE_NOT_FOUND_TIME,'s',end='\r')
 			for (x,y,w,h) in faces:
 				# To draw a rectangle in a face
 				cv2.rectangle(img,(x,y),(x+w,y+h),(255,255,0),2)
