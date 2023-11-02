@@ -1,6 +1,7 @@
 import threading
 import cv2
 from datetime import datetime
+from PIL import Image, ImageDraw, ImageOps
 
 class SharedCam:
   frame = None
@@ -40,3 +41,17 @@ class SharedCam:
   def join(self):
      """Call for the parent threadd to wait for camera thread"""
      if self.camera_thread.is_alive(): self.camera_thread.join()
+
+class ImageUtils:
+   def __init__(self):
+      self.mask = Image.new('L', (200,200), 0)
+      draw = ImageDraw.Draw(self.mask) 
+      draw.ellipse((0, 0) + self.mask.size, fill=255) 
+      pass
+   
+   def create_rounded_image(self,frame) -> Image:
+      """Create a rounded image from a frame"""
+      img = Image.fromarray(frame)
+      output = ImageOps.fit(img, self.mask.size, centering=(0.5, 0.5))
+      output.putalpha(self.mask)
+      return output
