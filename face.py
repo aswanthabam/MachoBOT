@@ -14,8 +14,8 @@ class Face(SharedCam):
 	
 	def __init__(self,cam: SharedCam,exit_flag):
 		super().__init__(exit_flag)
-		self.face_cascade = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml') # face 
-		self.eye_cascade = cv2.CascadeClassifier('res/haarcascade_eye.xml') # eye
+		self.face_cascade = cv2.CascadeClassifier('assets/cascade/haarcascade_frontalface_default.xml') # face 
+		self.eye_cascade = cv2.CascadeClassifier('assets/cascade/haarcascade_eye.xml') # eye
 		self.face_thread = threading.Thread(target=self.run_face_recognition)
 		self.face_thread.daemon = True
 		self.cam = cam

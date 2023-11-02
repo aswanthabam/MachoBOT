@@ -11,9 +11,10 @@ class Voice:
     self.is_saying = True
     print("Saying msg : "+self.msg)
     t1 = gtts.gTTS(self.msg)
-    t1.save("temp/pl.mp3")
-    playsound("temp/pl.mp3")
+    t1.save("generated/audio/pl.mp3")
+    playsound("generated/audio/pl.mp3")
     self.is_saying = False
+    
   def say_message(self,msg):
     if self.is_saying:return False
     self.voice_thread = threading.Thread(target=self.run_voice)
