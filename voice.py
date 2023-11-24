@@ -12,7 +12,9 @@ class Voice:
     self.is_saying = True
     print("Saying msg : "+self.msg)
     self.msg = self.msg.lower()
-    path = f"generated/audio/{self.msg.replace(' ','')}.mp3"
+    path = "generated/audio/"
+    os.makedirs(path,exist_ok=True)
+    path += f"{self.msg.replace(' ','')}.mp3"
     if os.path.isfile(path):
       playsound(path)
     else:
